@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  link-shortener-postgresql:
+    build: .
+    command: ./link-shortener
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - STORAGE_CONNECT=postgresql
+    image: link-shortener
+  link-shortener-inmemory:
+    build: .
+    command: ./link-shortener
+    ports:
+      - "8080:8080"
+    environment:
+      - STORAGE_CONNECT=inmemory
+    image: link-shortener
+  db:
+    restart: always
+    image: postgres:13.3
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_DB=link-shortener
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345678
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

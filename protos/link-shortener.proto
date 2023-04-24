@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package protos;
+
+option go_package = "link-shortener/protos";
+
+service LinkShortener{
+  rpc GetRawURL(GetRawURLRequest) returns (GetRawURLResponse);
+  rpc ShortenURL(ShortenURLRequest) returns (ShortenURLResponse);
+}
+
+message GetRawURLRequest{
+  string Token = 1;
+}
+
+message GetRawURLResponse{
+  string RawURL = 1;
+}
+
+message ShortenURLRequest{
+  string RawURL = 1;
+}
+
+message ShortenURLResponse{
+  string Token = 1;
+}
